@@ -1,11 +1,11 @@
 ---
 name: go
-description: Full pipeline — fix tests, create agents, parallel review, update CLAUDE.md, commit. One command does it all.
+description: Full pipeline — fix tests, parallel review, update CLAUDE.md, commit. One command does it all.
 argument-hint: [optional focus area]
 allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Task, TodoWrite
 ---
 
-# /go — Fix, Review, Document & Ship
+# /go — Fix, Review & Ship
 
 Full pipeline in 1 command. Stops on first critical failure.
 
@@ -28,23 +28,20 @@ Full pipeline in 1 command. Stops on first critical failure.
 
 Launch these 3 tasks simultaneously using the Task tool:
 
-### Agent 1: Security Reviewer
+### Agent 1: Test Fixer
+- Run the test-fixer agent (`agents/test-fixer.md`)
+- Verify all tests still pass after Phase 1 changes
+- If any regressions, fix them
+
+### Agent 2: Code Reviewer
+- Review all files in `src/` for code quality
+- Check for: bugs, logic errors, naming conventions, DRY violations
+- Report findings as actionable items
+
+### Agent 3: Security Reviewer
 - Scan all files in `src/` for security issues
 - Check for: hardcoded secrets, SQL injection, missing input validation, OWASP Top 10
 - Report findings as actionable items
-
-### Agent 2: Documentation Writer
-- Add JSDoc comments to all exported functions in `src/`
-- Keep comments concise — one line per param, one line for return value
-- Don't add comments to test files
-
-### Agent 3: README Writer
-- Write a `README.md` with:
-  - Project description
-  - How to install (`npm install`)
-  - How to run tests (`npm test`)
-  - API endpoints with method, path, request/response examples
-  - How to use Claude Code with this project
 
 **Wait for all 3 agents to complete before proceeding.**
 
@@ -62,15 +59,15 @@ Launch these 3 tasks simultaneously using the Task tool:
 Ensure these agent files exist in `agents/`:
 
 1. `agents/test-fixer.md` — runs tests, fixes failures, loops until green
-2. `agents/security-reviewer.md` — OWASP scan, secrets check, access control
-3. `agents/code-reviewer.md` — bugs, quality, conventions
+2. `agents/code-reviewer.md` — bugs, quality, conventions
+3. `agents/security-reviewer.md` — OWASP scan, secrets check, access control
 
 Only create agents that don't already exist. Skip if the file is already there.
 
 ## Phase 5 — Commit & Summary
 
 1. Stage all changed files (not `node_modules/`)
-2. Commit with message: `feat: pipeline run — tests fixed, reviewed, documented`
+2. Commit with message: `feat: pipeline run — tests fixed, reviewed, shipped`
 3. Show summary:
 
 ```
@@ -79,9 +76,9 @@ Only create agents that don't already exist. Skip if the file is already there.
 | Step              | Result |
 |-------------------|--------|
 | Test fix          | ...    |
+| Test fixer agent  | ...    |
+| Code review       | ...    |
 | Security review   | ...    |
-| Documentation     | ...    |
-| README            | ...    |
 | CLAUDE.md update  | ...    |
 | Agent library     | ...    |
 | Commit            | ...    |
