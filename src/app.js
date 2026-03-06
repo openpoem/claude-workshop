@@ -24,7 +24,10 @@ app.get('/api/users/:id', (req, res) => {
 app.post('/api/users', (req, res) => {
   const { name, email } = req.body;
 
-  // BUG 1: Missing validation - should check if name and email exist
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required' });
+  }
+
   const user = {
     id: String(users.length + 1),
     name: name,
@@ -34,8 +37,7 @@ app.post('/api/users', (req, res) => {
 
   users.push(user);
 
-  // BUG 2: Should return 201, not 200
-  res.json({ data: user });
+  res.status(201).json({ data: user });
 });
 
 // DELETE user
@@ -45,9 +47,8 @@ app.delete('/api/users/:id', (req, res) => {
     return res.status(404).json({ error: 'User not found' });
   }
 
-  // BUG 3: Removes user but returns wrong response
   users.splice(index, 1);
-  res.json({ message: 'User removed' });
+  res.status(204).send();
 });
 
 module.exports = app;
