@@ -14,10 +14,10 @@ describe('Users API', () => {
   test('POST /api/users returns 201 on success', async () => {
     const res = await request(app)
       .post('/api/users')
-      .send({ name: 'Ron', email: 'ron@visma.com' });
+      .send({ name: 'Alice', email: 'alice@example.com' });
 
     expect(res.status).toBe(201);
-    expect(res.body.data.name).toBe('Ron');
+    expect(res.body.data.name).toBe('Alice');
   });
 
   // TEST 3: Should reject missing fields — FAILS (bug: no validation)
