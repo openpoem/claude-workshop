@@ -24,10 +24,6 @@ app.get('/api/users/:id', (req, res) => {
 app.post('/api/users', (req, res) => {
   const { name, email } = req.body;
 
-  if (!name || !email) {
-    return res.status(400).json({ error: 'Name and email are required' });
-  }
-
   const user = {
     id: String(users.length + 1),
     name: name,
@@ -37,7 +33,7 @@ app.post('/api/users', (req, res) => {
 
   users.push(user);
 
-  res.status(201).json({ data: user });
+  res.json({ data: user });
 });
 
 // DELETE user
@@ -48,7 +44,7 @@ app.delete('/api/users/:id', (req, res) => {
   }
 
   users.splice(index, 1);
-  res.status(204).send();
+  res.json({ deleted: true });
 });
 
 module.exports = app;
